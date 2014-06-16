@@ -1,0 +1,9 @@
+simplejson
+pyaml
+testtools
+nose
+nose_xunitmp
+requests
+selenium
+splinter
+qubell-api-python-client
