@@ -6,7 +6,7 @@ Demonstrates example of gui test.
 Run
 
 ```bash
-pip install -r test/requirements.txt
+pip install -r requirements.txt
 
 export QUBELL_TENANT=https://express.qubell.com
 echo 'use basic auth user'
