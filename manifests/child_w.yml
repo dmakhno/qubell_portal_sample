@@ -1,0 +1,83 @@
+application:
+  configuration:
+    init.s: some sub string
+    init.m:
+      sub-key: sub-value
+    init.i: 9
+    init.l:
+      - sub-item1
+      - sub-item2
+    init.e: this is a string
+  interfaces:
+    init:
+      s: bind(typer#input.s)
+      m: bind(typer#input.m)
+      i: bind(typer#input.i)
+      l: bind(typer#input.l)
+      e: bind(typer#input.e)
+  components:
+    typer:
+      type: workflow.Instance
+      interfaces:
+        input:
+          s:
+            type: configuration(string)
+            name: a sub string
+          m:
+            type: configuration(map<string,string>)
+            name: a sub map
+          i:
+            type: configuration(int)
+            name: an sub int
+          l:
+            type: configuration(list<string>)
+            name: a sub list
+          e:
+            type: configuration(object)
+            name: input.e - object, please select one of suggested values
+            suggestions:
+              str: this is a string
+              map:
+                a: A
+                b: B
+              list:
+                - x
+                - y
+                - z
+              num: 5
+        actions:
+          re-launch:
+            type: receive-command(string s, map<string,string> m, list<string> l, int i, object e)
+            name: Launch as command
+        result:
+          m: publish-signal(map<string,string>)
+          i: publish-signal(int)
+          l: publish-signal(list<string>)
+      configuration:
+        configuration.workflows:
+                                      launch: &launch
+                                        parameters:
+                                          s:
+                                            type: string
+                                          m:
+                                            type: map
+                                          l:
+                                            type: list
+                                          i:
+                                            type: int
+                                          e:
+                                            default: suggestion
+                                        steps: []
+                                        return:
+                                          m:
+                                            value: "{$.m}"
+                                          l:
+                                            value: "{$.l}"
+                                          i:
+                                            value: "{$.i}"
+                                          #warnings
+                                          e:
+                                            value: "{$.e}"
+                                          s:
+                                            value: "{$.s}"
+                                      re-launch: *launch

@@ -1,0 +1,96 @@
+application:
+  configuration:
+    init.s: string
+    init.m:
+      key: value
+    init.i: 7
+    init.l:
+      - item1
+      - item2
+    init.e: this is a string
+  interfaces:
+    init:
+      s: bind(typer#input.s)
+      m: bind(typer#input.m)
+      i: bind(typer#input.i)
+      l: bind(typer#input.l)
+      e: bind(typer#input.e)
+
+  components:
+    references:
+      components:
+        submodules:
+          components:
+            monitor-child:
+              type: reference.Submodule
+              configuration:
+                __locator.application-id: "child"
+              interfaces:
+                init:
+                  s: configuration(string)
+                  l: configuration(list<string>)
+                  m: configuration(map<string,string>)
+                  e: configuration(object)
+                #Child do not have this:
+                fake:
+                  f: publish-signal(int)
+    typer:
+      type: workflow.Instance
+      interfaces:
+        input:
+          s:
+            type: configuration(string)
+            name: a string
+          m:
+            type: configuration(map<string,string>)
+            name: a map
+          i:
+            type: configuration(int)
+            name: an int
+          l:
+            type: configuration(list<string>)
+            name: a list
+          e:
+            type: configuration(object)
+            name: input.e - object, please select one of suggested values
+            suggestions:
+              str: this is a string
+              map:
+                a: A
+                b: B
+              list:
+                - x
+                - y
+                - z
+              num: 5
+        actions:
+          re-launch:
+            type: receive-command(string s, map<string,string> m, list<string> l, int i, object e)
+            name: Launch as command
+        result:
+          m: publish-signal(map<string,string>)
+          i: publish-signal(int)
+          l: publish-signal(list<string>)
+      configuration:
+        configuration.workflows:
+                                      launch: &launch
+                                        parameters:
+                                          s:
+                                            type: string
+                                          m:
+                                            type: map
+                                          l:
+                                            type: list
+                                          i:
+                                            type: int
+                                          e:
+                                            default: suggestion
+                                        steps: []
+                                        return:
+                                          m:
+                                            value: "{$.m}"
+                                          l:
+                                            value: "{$.l}"
+                                          i:
+                                            value: "{$.i}"
+                                      re-launch: *launch
