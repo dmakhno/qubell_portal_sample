@@ -15,6 +15,10 @@ application:
       i: bind(typer#input.i)
       l: bind(typer#input.l)
       e: bind(typer#input.e)
+    the-show:
+      m: bind(typer#result.m)
+      i: bind(typer#result.i)
+      l: bind(typer#result.l)    
 
   components:
     references:
@@ -65,8 +69,12 @@ application:
             type: receive-command(string s, map<string,string> m, list<string> l, int i, object e)
             name: Launch as command
         result:
-          m: publish-signal(map<string,string>)
-          i: publish-signal(int)
+          m: 
+            type: publish-signal(map<string,string>)
+            name: A Map
+          i: 
+            type: publish-signal(int)
+            name: a reallllllllllllllllllllllllllllly shoooooooooooooooor Integer
           l: publish-signal(list<string>)
       configuration:
         configuration.workflows:
